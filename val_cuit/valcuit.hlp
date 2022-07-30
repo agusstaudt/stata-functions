@@ -1,0 +1,89 @@
+{smcl}
+{* 12ago2021}{...}
+{cmd:help valcuit}
+{hline}
+
+{title:Validación de la Clave Única de Identificación Tributaria (CUIT)}
+
+{title:Sintaxis}
+
+{p 8 17 2}
+{cmdab:valcuit} 
+{it:strvar}
+{ifin}
+{cmd:,}
+{opth gen:erate(newvar1)}
+[{opth clean(newvar2)}]
+
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Principal}
+{synopt:{opth gen:erate(newvar1)}}crea una nueva variable {it:newvar1}{p_end}
+{synopt:{opth clean(newvar2)}}crea una variable auxiliar {it:newvar2}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+{title:Descripción}
+
+{pstd}
+{cmd:valcuit} valcuit identifica las CUIT's inválidas generando una variable indicador que vale 1 
+para identificarlas. Además, emite un mensaje informando la cantidad de CUIT's invalidas.
+
+{title:Opciones}
+
+{dlgtab:Principal}
+
+{phang}
+{opth gen:erate(newvar1)} crea un identificador {it:newvar1} con valor 1 para CUIT's inválidas.{p_end}
+
+{phang}
+{opth clean(newvar2)} crea una variable auxiliar {it:newvar2} que contiene la información de las CUIT's pero sin carácteres no numéricos.{p_end}
+
+{title:Comentarios}
+
+    {title:Observaciones}
+
+{pstd}
+La variable que contiene la CUIT debe ser una cadena de carácteres {it:string}. 
+No obstante, podrían ocurrir los siguientes casos:
+
+{pstd}
+{bf:. caso 1}: La CUIT viene en tres campos numéricos o {it:string(var1, var2 y var3)} conteniendo 2, 8 y 1 dígito o carácter.
+
+{phang2}
+{bf:. Ejemplo resolución caso 1}: {cmd: egen cuit = concat(var1 var2 var3), f(%11.0f)}
+
+{pstd}
+{bf:. caso 2}: La CUIT viene en un campo numérico var1 del tipo {it:double}.
+
+{phang2}
+{bf:. Ejemplo resolución caso 2}: {cmd: gen cuit = string(var1,"%11.0f")}
+
+    {title:Advertencia}
+
+{pstd}
+Se han observado casos donde la CUIT viene en un campo {it:string} acompañada de carácteres no numéricos
+que la invalidan, aunque puedan tratarse de CUIT's válidos. 
+
+{pstd}
+Se recomienda el uso de la opción {bf: clean()} que crea una variable {it:string}
+conteniendo sólo los carácteres numéricos y aplica el comando a esa variable.
+
+{title:Ejemplos}
+
+{cmd:. valcuit cuit, gen(errorCUIT) clean(cuitaux)}
+
+{cmd:. valcuit cuit, gen(errorCUIT)}
+
+{cmd:. list cuit if errorCUIT}
+
+{cmd:. bysort empleador: list cuit denominacion if errorCUIT}
+	
+{title:Autor}
+
+Agustin Staudt, 
+{browse "https://www.caf.com/":Banco de Desarrollo de América Latina}
+agusstaudt@gmail.com
+
+
